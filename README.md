@@ -1,17 +1,22 @@
 # Índice
 
-- Introducción
-  * Vídeo de demostración
-- Hardware
-  * Listado de componentes
-  * Parte frontal
-  * Interior de la caja
-- Software
-  * Sobre la FFT
-  * Estructura del software
-  * Diagrama de estados
-- Conclusión
-  * Curiosidades y anécdotas
+- [Introducción](#introducción)
+  * [Vídeo de demostración](#vídeo-de-demostración)
+- [Hardware](#hardware)
+  * [Listado de componentes](#listado-de-componentes)
+  * [Parte frontal](#parte-frontal)
+  * [Interior de la caja](#interior-de-la-caja)
+- [Software](#software)
+  * [Diagrama de estados](#diagrama-de-estados)
+  * [Estructura del software](#estructura-del-software)
+    + [Pulsador](#pulsador)
+    + [Selector](#selector)
+    + [Display LCD y autómata de Control](#display-lcd-y-autómata-de-control)
+    + [FFT](#fft)
+- [Conclusión](#conclusión)
+  * [Curiosidades y anécdotas](#curiosidades-y-anécdotas)
+
+---
 
 # Introducción 
 
@@ -21,7 +26,9 @@ Aquí os dejo mi proyecto: un **analizador de espectro de audio** que puedes usa
 
 ## Vídeo de demostración
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=l5mfLCQSGKE" target="_blank"><img src="http://img.youtube.com/vi/l5mfLCQSGKE/0.jpg" alt="Analizador de espectro de audio - Javiolonchelo" width="600" height="430" /></a>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=l5mfLCQSGKE" target="_blank"><img src="http://img.youtube.com/vi/l5mfLCQSGKE/0.jpg" alt="Analizador de espectro de audio - Javiolonchelo"/></a>
+
+---
 
 # Hardware
 
@@ -38,6 +45,7 @@ Aquí os dejo mi proyecto: un **analizador de espectro de audio** que puedes usa
 |         Potenciómetros |    3     | 5 kΩ, 10 kΩ, 50 kΩ                                                                                   | menos de 2.50 € en [Mouser electronics](https://www.mouser.es/ProductDetail/BI-Technologies-TT-Electronics/P160KN2-4QC20B10K?qs=%252BUYXD5bnyXp0dKMvuiQ1XQ%3D%3D&mgh=1&vip=1&gclid=Cj0KCQjw4v2EBhCtARIsACan3nye1P69UVHaKwZ8lj5um4bELRXDn4sVjYRROK_ulTCR6Nwah088bMQaAmjWEALw_wcB)                                                                                                                                                                         |
 | Conectores Jack hembra |    2     | [Esquema](https://www.electronicaembajadores.com/datos/fotos/articulos/grandes/ct/ctc1/ctc1500a.jpg) | 2.50 € en [Electrónica Embajadores](https://www.electronicaembajadores.com/es/Productos/Detalle/CTC1500/conectores/conectores-jack/conector-jack-6-3-mm-base-hembra-panel-2-polos-abierta)                                                                                                                                                                                                                                                               |
 |                        |          |                                                                                                      | `TOTAL (sin μC): ~ 19 €`                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Cables | Demasiados | |Encontrado en la buhardilla de mi casa |
 
 ## Parte frontal
 
@@ -65,21 +73,45 @@ También podemos encontrar un transistor que regula la alimentación del display
 
 # Software
 
-Se ha empleado Keil μVision 5 como IDE para el desarrollo de código C++, usando las librerías MBED y CMSIS DSP.
-
-## Sobre la FFT
-
-El sistema calcula la DFT de dicha señal mediante el algoritmo FFT aportado por la librería CMSIS – DSP, usando 256 muestras. El resultado es representado en el display LCD, gestionado sin ninguna librería específica.
-
-Las capacidades de este microcontrolador me han permitido obtener una frecuencia de muestreo máxima de 26 kHz. Esto no lo tuve en cuenta a la hora de comprar mis componentes para el filtrado. Como tenemos un condensador con frecuencia de corte de 20 kHz (para eliminar ruido inaudible), las frecuencias a partir de 13 kHz producen aliasing. Usando un barrido en frecuencia se puede comprobar perfectamente, además de que existe cierta saturación y se pueden apreciar los armónicos. Recomiendo ver el vídeo de demostración.
-
-## Estructura del software
-
-El funcionamiento de este sistema es gobernado por tres autómatas, implementando una interfaz que permite encender el sistema, apagarlo, cambiar la configuración del suavizado de representación y comenzar el análisis espectral.
+Se ha empleado Keil μVision 5 como IDE para el desarrollo de código C++, usando las librerías MBED y CMSIS DSP. El funcionamiento de este sistema es gobernado por tres autómatas, implementando una interfaz que permite encender el sistema, apagarlo, cambiar la configuración del suavizado de representación y comenzar el análisis espectral.
 
 ## Diagrama de estados
 
 ![Diagrama de estados](Figures/Diagrama_de_estados.svg)
+
+## Estructura del software
+
+Vamos a analizar por partes las diferentes funcionalidades del código que he desarrollado.
+
+### Pulsador
+
+El pulsador genera interrupciones cuando se levanta el dedo del mismo. Dependiendo del tiempo que haya transcurrido desde la pulsación, se generará un mensaje de pulsación corta `msg_pulsador_short` o de pulsación larga `msg_pulsador_long` que recibirá el autómata de control. Además, se realiza la gestión de los rebotes con un temporizador.
+
+### Selector
+
+El autómata de control indica la cantidad de opciones que se pueden tomar, dependiendo de la situación.
+
+Por ejemplo, en la pantalla de inicio tenemos dos opciones, `Start` y `Settings`, por lo que el selector divide los 65536 posibles valores de lectura (16 bits) a la entrada en dos rangos iguales de 32768 valores cada uno. Si a la entrada tenemos `1 V`, el valor leído pertenecerá al primer rango. Por ende, el mensaje generado será `msg_option_1`. Para el resto de opciones, los mensajes generados son equivalentes.
+
+Para evitar refrescos de pantalla innecesarios, una variable llamada `prev_option` almacena el valor de la opción anterior para comprobar si se ha realizado un cambio en la selección.
+
+### Display LCD y autómata de Control
+
+El display es gestionado sin librerías. Un transistor permite controlar el estado de encendido o apagado. Al encenderse, se realiza la inicialización del display y se generan los caracteres de usuario (accediendo a la memoria CGRAM del display) que mostrarán diferentes niveles (del 0 al 8) durante la representación espectral.
+
+- Cuando el sistema se enciende, aparece un mensaje de bienvenida: `Welcome!` durante un tiempo. Luego, aparece el menú, con las opciones `Start` y `Settings`. Usando el selector podemos escoger la opción que deseemos. Confirmando la selección con una pulsación corta, el sistema cambia de estado.
+
+- Cuando accedemos a `Settings`, podemos seleccionar diferentes valor de suavizado. Este suavizado se implementa como la media de un cierto número de muestras anteriores. Las opciones son `High` (media de 5 muestras), `Normal` (3, por defecto) y `Low` (1). Al realizar otra pulsación corta, volvemos al menú.
+
+- Si pulsamos `Start`, el sistema realiza el análisis espectral.
+
+### FFT
+
+El sistema calcula la DFT de dicha señal mediante el algoritmo FFT aportado por la librería CMSIS – DSP, usando 256 muestras.
+
+Las capacidades de este microcontrolador me han permitido obtener una frecuencia de muestreo máxima de 26 kHz. Esto no lo tuve en cuenta a la hora de comprar mis componentes para el filtrado. Como tenemos un condensador con frecuencia de corte de 20 kHz (para eliminar ruido inaudible), las frecuencias a partir de 13 kHz producen aliasing. Usando un barrido en frecuencia se puede comprobar perfectamente, además de que existe cierta saturación y se pueden apreciar los armónicos.
+
+Recomiendo ver el vídeo de demostración.
 
 # Conclusión
 
