@@ -4,6 +4,10 @@ La Delegación de Alumnos de la ETSIST organizó un concurso de microcontrolador
 
 Aquí os dejo mi proyecto: un **analizador de espectro de audio** que puedes usar con tu propio móvil u ordenador.
 
+## Vídeo de demostración
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=l5mfLCQSGKE" target="_blank"><img src="http://img.youtube.com/vi/l5mfLCQSGKE/0.jpg" alt="Analizador de espectro de audio - Javiolonchelo" width="600" height="430" /></a>
+
 # Hardware
 
 ## Listado de componentes
@@ -18,7 +22,7 @@ Aquí os dejo mi proyecto: un **analizador de espectro de audio** que puedes usa
 |           Resistencias |    3     | 220 Ω (x1), 1 MΩ (x2)                                                                                | Poquito, pero varía mucho según la tienda                                                                                                                                                                                                                                                                                                                                                                                                                |
 |         Potenciómetros |    3     | 5 kΩ, 10 kΩ, 50 kΩ                                                                                   | menos de 2.50 € en [Mouser electronics](https://www.mouser.es/ProductDetail/BI-Technologies-TT-Electronics/P160KN2-4QC20B10K?qs=%252BUYXD5bnyXp0dKMvuiQ1XQ%3D%3D&mgh=1&vip=1&gclid=Cj0KCQjw4v2EBhCtARIsACan3nye1P69UVHaKwZ8lj5um4bELRXDn4sVjYRROK_ulTCR6Nwah088bMQaAmjWEALw_wcB)                                                                                                                                                                         |
 | Conectores Jack hembra |    2     | [Esquema](https://www.electronicaembajadores.com/datos/fotos/articulos/grandes/ct/ctc1/ctc1500a.jpg) | 2.50 € en [Electrónica Embajadores](https://www.electronicaembajadores.com/es/Productos/Detalle/CTC1500/conectores/conectores-jack/conector-jack-6-3-mm-base-hembra-panel-2-polos-abierta)                                                                                                                                                                                                                                                               |
-|                        |          |                                                                                                      | `TOTAL (sin μC): ~ 19 €, TOTAL (con μC): ~ 87 €`                                                                                                                                                                                                                                                                                                                                                                                                         |
+|                        |          |                                                                                                      | `TOTAL (sin μC): ~ 19 €`                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
 ## Parte frontal
 
@@ -38,7 +42,7 @@ También tenemos un pulsador que permite confirmar dicha selección. Este tambi�
 
 A través de dos entradas de audio mediante conectores jack (en mono, ya que ambos canales se encuentran en corto), se recoge una señal de audio analógica. Se hace pasar por una etapa de amplificación de tensión, de ganancia regulable, y se añade un _offset_ de corriente continua para realizar correctamente la medida.
 
-![Etapa de amplificación de tensión](Figures/EtapaTension.svg)
+<img src="Figures/EtapaTension.svg" alt="Etapa de amplificación de tensión" width="600"/>
 
 Cabe mencionar que, en este caso, la tensión manejada es `Vcc = 3.3 V`, puesto que es la tensión que ofrece el microcontrolador a la salida de sus pines.
 
@@ -58,13 +62,9 @@ Las capacidades de este microcontrolador me han permitido obtener una frecuencia
 
 El funcionamiento de este sistema es gobernado por tres autómatas, implementando una interfaz que permite encender el sistema, apagarlo, cambiar la configuración del suavizado de representación y comenzar el análisis espectral.
 
-Adjunto un diagrama de estados del sistema, además de fotos y vídeos mostrando la funcionalidad.
+## Diagrama de estados
 
-# Vídeo de demostración
-
-![demo](https://youtu.be/l5mfLCQSGKE)
-
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=l5mfLCQSGKE" target="_blank"><img src="http://img.youtube.com/vi/l5mfLCQSGKE/0.jpg" alt="IMAGE ALT TEXT HERE" width="600" height="430" border="2" /></a>
+![Diagrama de estados](Figures\Diagrama_de_estados.svg)
 
 # Conclusión
 
@@ -76,7 +76,7 @@ Por ello, creo que este es el mejor resultado posible, aquel que me ha brindado 
 
 Me ha gustado tanto que, tal vez, ¡me acabe cambiando de carrera! Os iré contando, queridos internautas :)
 
-# Curiosidades y anécdotas
+## Curiosidades y anécdotas
 
 - Tras la cinta decorativa que rodea al pulsador, asoma un pequeño circulito de color negro. Es un altavoz piezoeléctrico, que no pudo ser implementado por superar el tamaño de imagen límite (por usar la versión de prueba de Keil μVision).
 
