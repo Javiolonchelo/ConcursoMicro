@@ -1,4 +1,19 @@
-# Introducción
+# Índice
+
+- Introducción
+  * Vídeo de demostración
+- Hardware
+  * Listado de componentes
+  * Parte frontal
+  * Interior de la caja
+- Software
+  * Sobre la FFT
+  * Estructura del software
+  * Diagrama de estados
+- Conclusión
+  * Curiosidades y anécdotas
+
+# Introducción 
 
 La Delegación de Alumnos de la ETSIST organizó un concurso de microcontroladores. Todos los proyectos fueron realmente fascinantes, para mí fue todo un placer poder participar :D
 
