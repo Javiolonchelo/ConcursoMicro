@@ -49,11 +49,11 @@ Existen tres potenciómetros para el control del dispositivo:
 
 También tenemos un pulsador que permite confirmar dicha selección. Este también sirve para conmutar el estado del sistema de encendido a apagado y viceversa, mediante una pulsación larga. Algunas características que aquí no comento se describen en la caja del proyecto.
 
-![Parte frontal](Figures\Frontal.JPG)
+![Parte frontal](Figures/Frontal.JPG)
 
 ## Interior de la caja
 
-![Interior de la caja](Figures\CircuitoZoomExplicado.jpeg)
+![Interior de la caja](Figures/CircuitoZoomExplicado.jpeg)
 
 A través de dos entradas de audio mediante conectores jack (en mono, ya que ambos canales se encuentran en corto), se recoge una señal de audio analógica. Se hace pasar por una etapa de amplificación de tensión, de ganancia regulable, y se añade un _offset_ de corriente continua para realizar correctamente la medida.
 
@@ -67,9 +67,9 @@ También podemos encontrar un transistor que regula la alimentación del display
 
 Se ha empleado Keil μVision 5 como IDE para el desarrollo de código C++, usando las librerías MBED y CMSIS DSP.
 
-El sistema calcula la DFT de dicha señal mediante el algoritmo FFT aportado por la librería CMSIS – DSP, usando 256 muestras. El resultado es representado en el display LCD, gestionado sin ninguna librería específica.
-
 ## Sobre la FFT
+
+El sistema calcula la DFT de dicha señal mediante el algoritmo FFT aportado por la librería CMSIS – DSP, usando 256 muestras. El resultado es representado en el display LCD, gestionado sin ninguna librería específica.
 
 Las capacidades de este microcontrolador me han permitido obtener una frecuencia de muestreo máxima de 26 kHz. Esto no lo tuve en cuenta a la hora de comprar mis componentes para el filtrado. Como tenemos un condensador con frecuencia de corte de 20 kHz (para eliminar ruido inaudible), las frecuencias a partir de 13 kHz producen aliasing. Usando un barrido en frecuencia se puede comprobar perfectamente, además de que existe cierta saturación y se pueden apreciar los armónicos. Recomiendo ver el vídeo de demostración.
 
@@ -79,7 +79,7 @@ El funcionamiento de este sistema es gobernado por tres autómatas, implementand
 
 ## Diagrama de estados
 
-![Diagrama de estados](Figures\Diagrama_de_estados.svg)
+![Diagrama de estados](Figures/Diagrama_de_estados.svg)
 
 # Conclusión
 
@@ -94,6 +94,8 @@ Me ha gustado tanto que, tal vez, ¡me acabe cambiando de carrera! Os iré conta
 ## Curiosidades y anécdotas
 
 - Tras la cinta decorativa que rodea al pulsador, asoma un pequeño circulito de color negro. Es un altavoz piezoeléctrico, que no pudo ser implementado por superar el tamaño de imagen límite (por usar la versión de prueba de Keil μVision).
+
+- Estos problemas de espacio han surgido principalmente por usar muchos recursos diferentes. Floats, entre ellos. He tenido que evitar los logaritmos, así que la representación del espectro es la raíz cuarta del módulo de la respuesta en frecuencia, porque me ahorra mucho espacio de imagen jejeje
 
 - El apartado de configuración estaba pensado para tener hasta dos opciones más y otros cuantos submenús, pero la limitación del tamaño de imagen me impidió seguir por esta línea de desarrollo :(
 
