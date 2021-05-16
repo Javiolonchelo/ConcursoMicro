@@ -1,0 +1,41 @@
+\documentclass{standalone}
+
+\usepackage[greek,spanish,es-tabla,es-nodecimaldot,es-noindentfirst]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{xfrac}
+\usepackage[utf8]{inputenc}
+\usepackage{physics}
+\usepackage{cancel}
+\usepackage{tikz}
+\usepackage[oldvoltagedirection]{circuitikz}
+\usepackage{siunitx}
+
+\usetikzlibrary{babel}
+\ctikzset{
+    monopoles/vcc/arrow={Triangle[width=0.8*\scaledwidth, length=\scaledwidth]}, monopoles/vee/arrow={Triangle[width=6pt, length=8pt]}
+}
+\ctikzloadstyle{romano}
+\tikzset{romano circuit style}
+
+\begin{document}
+
+\begin{circuitikz}
+
+    \ctikzset{bipoles/oscope/width=1.5, bipoles/oscope/height=1.0}
+    \draw (0,0) node[oscopeshape, fill=yellow!30!green!50!white](OSC){Audio signal};
+    \draw (OSC.in 2) to[short, o-] ++(0,-0.7) node[above]{\phantom{aa}R} to[short, -*] ++(0,-0.8) -- ++(0.5,0) to[capacitor, l=${270\textrm{ nF}}$] ++(2,0) to[R=${220\, \Omega }$] ++(1.8,0) node[op amp, anchor=-](Amp){};
+    \draw (OSC.in 1) to[short, o-] ++(0,-0.7) node[above]{L\phantom{iiii}} -- ++(0,-0.8) -- ++(0.8,0);
+    \draw (OSC.left) to[short, o-, a=Gnd\phantom{ww}] ++(-0.5,0) -- ++(0,-1) node[ground]{};
+
+    \draw (Amp.up) -- ++(0, 0.6) node[vcc]{$V_{CC}$};
+    \draw (Amp.down) -- ++(0,-0.3) node[ground]{};
+    \draw (Amp.+) to[short, -*] ++(-2,0) node[above](uwu){} to[crossing] ++(0,+2) to[R=${1\textrm{ M}\Omega }$] ++(0,+2) node[vcc]{$V_{CC}$};
+    \draw (uwu) -- ++(0,-0.5) to[R,a=${1\textrm{ M}\Omega }$] ++(0,-1.5) node[ground]{};
+
+    \ctikzset{resistors/width=1.5, resistors/zigs=9}
+    \draw (Amp.-) to[short, *-] ++(0,2.5) to[pR, wiper pos=0.5, l=Potentiometer, a=10k] ++(3,0) to[short, -*] ++(0,-3);
+    \draw (Amp.out) to[short, -o] ++(1,0) node[right](Pin){ p19};
+\end{circuitikz}
+\end{document}
